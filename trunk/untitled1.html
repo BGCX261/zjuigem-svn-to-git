@@ -1,0 +1,32 @@
+<!doctype html public "-//w3c//dtd xhtml 1.0 transitional//en" "http://www.w3.org/tr/xhtml1/dtd/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta name="author" content="forfor">
+<title> Test Document </title>
+<!--[if IE]> 
+<style type="text/css">
+div.a{height:500px;}
+</style>
+<![endif]-->
+<style type="text/css">
+div.a{
+width:300px;
+min-height:500px;
+border:1px solid;
+padding-bottom:50px;
+position:relative;
+}
+div.b{padding:5px;background-color:#efe;}
+div.c{width:100%;height:50px;position:absolute;bottom:0px;;background-color:#eef;}
+</style>
+</head>
+<body>
+<div class="a">
+<div class="b">
+不用relative而改用absolute,这样就算上面的div内容过多,也只会把父div撑开,而下面的div依然在最下面.不过最关键的是父div的padding-bottom属性,要设置的和下面的div高度相同哦.最后要注意的是IE暂时只对tr td th支持min-height属性,而在这里必须使用min-height,所以要单独对IE使用height属性,以保证兼容性.<br/>^_^<br/>^_^<br/>^_^<br/>^_^
+</div>
+<div class="c">下面的div</div>
+d
+</div>
+</body>
+</html>

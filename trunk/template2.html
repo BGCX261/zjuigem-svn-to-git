@@ -1,0 +1,554 @@
+<html>
+
+<style type="text/css">
+/* CSS Document Author: Zhou Qin */
+
+/* hack css: learn from Peking and TU Delft */
+div#top-section{
+    background: url();
+    background-color:#E000;
+    color: #D1E9E9;
+    height: 20px;
+    width:  100%;
+    border: 0px;
+	z-index: 1;
+}
+
+
+div#p-logo{
+    display: none;
+}
+div#menubar{
+    z-index: 1;
+    top: 0;
+    font-color: #D1E9E9;
+}
+div#menubar .selected a{
+    color: #CDCD9A;
+}
+.left-menu{
+    float: left;
+    top: 0;
+	z-index: 1;
+}
+.right-menu{
+    float: right;
+    top: 0;
+	z-index: 1;
+}
+
+div#search-controls{
+    display: none;
+    position: absolute;
+    float: right;
+    top: 0px;
+    right: 20px;
+    background: url("") no-repeat;
+    width: 120px;
+    height: 25px;
+}
+#mw-searchButton{
+    display: none;
+    border: none;
+    background: none;
+    width: 30px;
+    height: 25px;
+    left: 87px;
+    line-height: 0;
+    font-size: 1px;
+    text-indent: 100pc;
+    cursor: pointer;
+    top: 0;
+    position: absolute;
+    padding: 0;
+    margin: 0;
+}
+#content h1.firstHeading {display: none;}
+
+#content { 
+	z-index: 1; 
+	background-color: transparent; 
+	border: none; 
+	width: 1200px;
+	margin-left: auto;
+	margin-right: auto;
+}
+	
+#footer-box{
+	display: none;	
+}
+
+
+#globalWrapper {
+	background-image:url('http://2010.igem.org/wiki/images/c/cb/Zjuigemnewb.jpg');
+	background-position:top;
+	/*'http://2010.igem.org/wiki/images/e/e5/Zjuigem_myupdate0.jpg');*/
+	background-repeat: no-repeat;
+	background-color: #000;
+}
+
+/* hack ends */
+
+
+#header {
+	width:1000px;
+	height:400px;
+	margin-left: 70px;
+	margin-bottom: 10px;
+	overflow:hidden;
+	background-color: transparent;
+	background-image: url(http://2010.igem.org/wiki/images/4/45/Zjuheader1.jpg);
+	background-repeat:no-repeat;
+	border:outset;
+	border-width:thick;
+	border-color:#66C;	
+	/*http://2010.igem.org/wiki/images/1/12/Zjuheader2.jpg
+	http://2010.igem.org/wiki/images/b/b7/Zjuheader3.jpg
+	http://2010.igem.org/wiki/images/0/0e/Zjuheader4.jpg
+	http://2010.igem.org/wiki/images/d/d1/Zjuheader5.jpg
+	http://2010.igem.org/wiki/images/c/cd/Zjuheader6.jpg
+	http://2010.igem.org/wiki/images/9/97/Zjuheader7.jpg*/
+	/*padding-left:30px;
+	padding-bottom: 10px;*/
+}
+
+#header img{
+	border:0px;
+}
+
+#headleft {
+	float:left;
+	width: 150px;
+	height: 400px;
+	background-color: transparent;
+}
+
+#headright {
+	float:left;
+	height: 400px;
+	width: 850px;
+	background-color: transparent;
+}	
+
+/*#main{
+	width:1024px;
+	height:1000px;
+}*/
+
+#menubar0 {
+	background-color: transparent;
+	float: left;
+	font-size:20px;
+	font-stretch:expanded;
+	width: 200px;
+	height: 1000px;
+	/*min-height: 1000px;
+	overflow: auto;
+	padding-bottom: 100px;
+	position:relative;*/
+}
+
+a.aa {
+		color:#CCC;
+}
+
+a.aa:hover{
+		color:#CCC;
+}
+
+a.bb {
+		color:#66C;
+}
+
+a.bb:hover{
+		color:#66C;
+}
+/*#menubar0 h6 a{
+	font-size:20px;
+	font-stretch:expanded;
+	color:#CCC;
+}
+
+#menubar0 h6 a:hover{
+	font-size:20px;
+	font-stretch:expanded;
+	color:#FFF;
+}*/
+
+#menubar0 ul li{
+	text-align: left;
+	line-height: 35px;
+	font-size: 14px;
+}
+
+#menubar1{
+	width:200px;
+	
+	background-image:url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg);
+	/*http://2010.igem.org/wiki/images/d/d6/ZJUMenubar1.jpg);*/
+	background-repeat:no-repeat;
+        line-height: 57px;
+	text-align:center;
+	
+}
+
+#sheet1{
+	width: 170px;
+	padding-left: 15px;
+	padding-right: 15px;
+	display:none;
+	
+}
+
+#sheet1 a{
+		color:#66F;
+}
+
+#sheet1 a:hover{
+		color:#FFF;
+}
+
+#menubar2{
+	width:200px;
+	background-image:url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg);
+	/*http://2010.igem.org/wiki/images/8/87/ZJUMenubar2.jpg);*/
+	background-repeat:no-repeat;
+        line-height: 57px;
+	text-align:center;
+}
+
+#sheet2{
+	width: 170px;
+	padding-left: 15px;
+	padding-right: 15px;
+	display:none;
+	
+}
+
+#sheet2 a{
+		color:#66F;
+}
+
+#sheet2 a:hover{
+		color:#FFF;
+}
+
+#menubar3{
+	width:200px;
+	
+	background-image:url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg);
+	/*http://2010.igem.org/wiki/images/1/15/ZJUMenubar3.jpg);*/
+	background-repeat:no-repeat;
+        line-height: 57px;
+	text-align:center;
+}
+
+#sheet3{
+	width: 170px;
+	padding-left: 15px;
+	padding-right: 15px;
+	display:none;
+	
+}
+
+#sheet3 a{
+		color:#66F;
+}
+
+#sheet3 a:hover{
+		color:#FFF;
+}
+
+#menubar4{
+	width:200px;
+	
+	background-image:url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg);
+	/*http://2010.igem.org/wiki/images/0/09/ZJUMenubar4.jpg);*/
+	background-repeat:no-repeat;
+        line-height: 57px;
+	text-align:center;
+}
+
+#sheet4{
+	width: 170px;
+	padding-left: 15px;
+	padding-right: 15px;
+	display:none;
+}
+
+#sheet4 a{
+		color:#66F;
+}
+
+#sheet4 a:hover{
+		color:#FFF;
+}
+
+#menubar5{
+	width:200px;
+	
+	background-image:url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg);
+	/*http://2010.igem.org/wiki/images/f/fa/ZJUMenubar5.jpg);*/
+	background-repeat:no-repeat;
+        line-height: 59px;
+	text-align:center;
+}
+
+#sheet5{
+	width: 170px;
+	padding-left: 15px;
+	padding-right: 15px;
+	display:none;
+
+}
+
+#sheet5 a{
+		color:#66F;
+}
+
+#sheet5 a:hover{
+		color:#FFF;
+}
+
+#id1 {}
+#id2 {}
+#id3 {}
+#id4 {}
+#id5 {}
+	
+
+#menubox{
+	top:e­xpression(document.documentElement.clientHeight + document.documentElement.scrollTop - this.offsetHeight);
+	/*position:absolute;bottom:0px;*/
+	
+	background-color:transparent;
+	padding-top: 2px;
+	width:150px;
+	/*filter:alpha(opacity=70);*/
+	filter: alpha(opacity=90);
+	border-style:double;
+	border-width:thick;
+	border-color:#66C;	
+}
+
+#main_content {
+	margin-left: 17px;
+	padding-left:30px;
+	padding-right:20px;
+	padding-top:20px;
+	/*background-image:url(http://2010.igem.org/wiki/images/6/64/Zjuigem_content2.jpg); */
+	background-repeat:no-repeat;
+	background-color:#FFF;
+	float: left;
+	overflow: auto;
+	overflow-x: hidden;
+	width: 856px;
+	height: 1066px;
+	/*color:#FFF;*/
+	filter: alpha(opacity=90);
+	border-style:double;
+	border-width:thick;
+	border-color:#66C;
+}
+
+#main_content {
+	
+	font-family:Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	line-height: 40px;
+}
+
+#main_content p {
+	line-height: 25px;
+}
+
+#main_content pre {
+	line-height: 25px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:14px;
+	
+}
+</style>
+
+<script language="javascript">
+function showDiv(divid, menuid, idid){
+	
+	document.getElementById('sheet1').style.display = "none"; 
+	document.getElementById('menubar1').style.backgroundImage = "url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg)";
+	document.getElementById("id1").className="aa";
+	document.getElementById('sheet2').style.display = "none";
+	document.getElementById('menubar2').style.backgroundImage = "url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg)";
+	document.getElementById("id2").className="aa";
+	document.getElementById('sheet3').style.display = "none";
+	document.getElementById('menubar3').style.backgroundImage = "url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg)";
+	document.getElementById("id3").className="aa";
+	document.getElementById('sheet4').style.display = "none";
+	document.getElementById('menubar4').style.backgroundImage = "url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg)";
+	document.getElementById("id4").className="aa";
+	document.getElementById('sheet5').style.display = "none";
+	document.getElementById('menubar5').style.backgroundImage = "url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg)";
+	document.getElementById("id5").className="aa";
+	document.getElementById(divid).style.display = "block";
+	document.getElementById(menuid).style.backgroundImage = "url(http://2010.igem.org/wiki/images/c/c8/Zjumenubar.jpg)";
+	document.getElementById(idid).className="bb";
+}
+	
+function showDiv1(){
+	
+	document.getElementById('sheet1').style.display = "none";
+	document.getElementById('menubar1').style.backgroundImage = "url(http://2010.igem.org/wiki/images/c/c8/Zjumenubar.jpg)";
+	document.getElementById("id1").className="bb";
+	document.getElementById('sheet2').style.display = "none";
+	document.getElementById('menubar2').style.backgroundImage = "url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg)";
+	document.getElementById("id2").className="aa";
+	document.getElementById('sheet3').style.display = "none";
+	document.getElementById('menubar3').style.backgroundImage = "url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg)";
+	document.getElementById("id3").className="aa";
+	document.getElementById('sheet4').style.display = "none";
+	document.getElementById('menubar4').style.backgroundImage = "url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg)";
+	document.getElementById("id4").className="aa";
+	document.getElementById('sheet5').style.display = "none";
+	document.getElementById('menubar5').style.backgroundImage = "url(http://2010.igem.org/wiki/images/1/18/Zjuigem_119.jpg)";
+	document.getElementById("id5").className="aa";
+}	
+	
+nereidFadeObjects = new Object();
+nereidFadeTimers = new Object();
+function nereidFade(object, destOp, rate, delta){
+if (!document.all)
+return
+    if (object != "[object]"){ setTimeout("nereidFade("+object+","+destOp+","+rate+","+delta+")",0);
+        return;
+    }
+    clearTimeout(nereidFadeTimers[object.sourceIndex]);
+    diff = destOp-object.filters.alpha.opacity;
+    direction = 1;
+    if (object.filters.alpha.opacity > destOp){
+        direction = -1;
+    }
+    delta=Math.min(direction*diff,delta);
+    object.filters.alpha.opacity+=direction*delta;
+    if (object.filters.alpha.opacity != destOp){
+        nereidFadeObjects[object.sourceIndex]=object;
+        nereidFadeTimers[object.sourceIndex]=setTimeout("nereidFade(nereidFadeObjects["+object.sourceIndex+"],"+destOp+","+rate+","+delta+")",rate);
+    }
+}
+
+slide = 1;
+
+function change(){
+        var lipan = Math.random();  //产生0-1之间的随机数
+    lipan = lipan * 6;             //用随机数乘以10
+    lipan = Math.round(lipan);      //取整
+    var lipath = "";
+    switch(lipan){
+      case 0: lipath = "http://2010.igem.org/wiki/images/4/45/Zjuheader1.jpg";break;    //图片位置
+      case 1: lipath = "http://2010.igem.org/wiki/images/1/12/Zjuheader2.jpg";break;
+      case 2: lipath = "http://2010.igem.org/wiki/images/b/b7/Zjuheader3.jpg";break;
+      case 3: lipath = "http://2010.igem.org/wiki/images/0/0e/Zjuheader4.jpg";break;
+      case 4: lipath = "http://2010.igem.org/wiki/images/d/d1/Zjuheader5.jpg";break;
+      case 5: lipath = "http://2010.igem.org/wiki/images/c/cd/Zjuheader6.jpg";break;
+      case 6: lipath = "http://2010.igem.org/wiki/images/9/97/Zjuheader7.jpg";break;	
+    }
+    document.getElementById("header").style.backgroundImage = "URL("+lipath+")";  //显示对应的图片
+}
+    setInterval("change()",15000);     //每1秒钟掉用一次change()
+
+</script>
+	<script language="javascript">switchbackground()
+    
+    </script>
+    <div id="header">
+     	<div id="headleft">
+        	<img src="http://2010.igem.org/wiki/images/b/bf/Zjunewlogo1.png" title="Zhejiang University, China"></img>
+        </div>
+        <div id="headright">
+        <img src="http://2010.igem.org/wiki/images/3/3d/Shishikan2.png" onMouseOut="nereidFade(this,60,10,5)" onMouseOver="nereidFade(this,100,10,5)" style="FILTER: alpha(opacity=50)" title="Zhejiang University, China"></img>
+        </div>
+        <!--
+         <img src="http://2010.igem.org/wiki/images/1/1b/Zjulogo2.png" title="Zhejiang University, China"></img>
+        <a href="http://www.zju.edu.cn/english">
+        <img src="http://2010.igem.org/wiki/images/b/b5/ZJUlogo.jpg" title="Zhejiang University, China"></img>
+        </a>	
+       
+ 
+        <a href="http://2010.igem.org/team:zju-china">
+        <img src="http://2010.igem.org/wiki/images/0/07/Headlogo.png" title="Team: ZJU-China"></img>
+        </a>-->	
+    	
+    </div>
+
+    
+    	<div id="menubar0">
+            <div id="menubar1">
+            	<a id="id1" class="aa" href="http://2010.igem.org/Team:ZJU-China" title="Home" onMouseOver="showDiv1()"><b>Home</b></a>
+                	<div id="sheet1">
+                    </div>
+            </div>
+            <div id="menubar2">
+               	<a id="id2" class="aa" title="Projects" onMouseOver="showDiv('sheet2', 'menubar2', 'id2')"><b>Projects</b></a>
+
+                    <div id="sheet2">
+                		<ul>
+                    	<li><a href="http://2010.igem.org/Team:ZJU-China/Background" title="Background">Background</a></li>
+      					<li><a href="http://2010.igem.org/Team:ZJU-China/Modeling" title="Modeling">Modeling</a></li>
+                        <li><a href="http://2010.igem.org/Team:ZJU-China/Software" title="Software">Software</a></li>
+                        <li><a href="http://2010.igem.org/Team:ZJU-China/Significance" title="Significance">Significance</a></li>
+                        <li><a href="http://2010.igem.org/Team:ZJU-China/Next Generation" title="Next Generation">Next Generation</a></li>    
+                        <!--<li><a href="http://2010.igem.org/Team:ZJU-China/Characterization of Biobrick" title="Characterization of Biobrick">Characterization of Biobrick</a></li>  
+                         href="http://2010.igem.org/Team:ZJU-China/ZJUprojects"
+                         href="http://2010.igem.org/Team:ZJU-China/ZJUactivities"
+                         href="http://2010.igem.org/Team:ZJU-China/ZJUteam"
+                         href="http://2010.igem.org/Team:ZJU-China/ZJUsponsors"-->
+                        <li><a href="http://2010.igem.org/Team:ZJU-China/Safety" title="Safety">Safety</a></li>
+                        <li><a href="http://2010.igem.org/Team:ZJU-China/Attribution and Contributions" title="Attribution and Contributions">Attribution and Contributions</a></li>    
+                    	</ul>
+                    </div>
+                
+            </div>
+
+            <div id="menubar3">
+               	<a id="id3" class="aa"  title="Acitivies" onMouseOver="showDiv('sheet3', 'menubar3', 'id3')"><b>Activities</b></a>
+
+                    <div id="sheet3">
+                		<ul>
+      					<li><a href="http://2010.igem.org/Team:ZJU-China/Human Practice" title="Human Practice">Human Practice</a></li>
+                        <li><a href="http://2010.igem.org/Team:ZJU-China/Team Cooperation" title="Team Cooperation">Team Cooperation</a></li>
+                    	</ul>
+                    </div>
+               
+            </div>
+
+            <div id="menubar4">
+               	<a id="id4" class="aa"  title="Team" onMouseOver="showDiv('sheet4', 'menubar4', 'id4')"><b>Team</b></a>
+
+                    <div id="sheet4">
+                		<ul>
+                    	<li><a href="http://2010.igem.org/Team:ZJU-China/Member info" title="Member info">Member info</a></li>
+      					<li><a href="http://2010.igem.org/Team:ZJU-China/University info" title="University info">University info</a></li>
+                        <li><a href="http://2010.igem.org/Team:ZJU-China/City info" title="City info">City info</a></li>
+                    	</ul>
+                    </div>
+               
+            </div>        
+   
+            <div id="menubar5">
+               	<a id="id5" class="aa"  title="Sponsors" onMouseOver="showDiv('sheet5', 'menubar5', 'id5')"><b>Sponsors</b></a>
+                
+                    <div id="sheet5">
+                		<ul>
+                    	<li><a href="http://2010.igem.org/Team:ZJU-China/Sunny Nutrition" title="Sunny Nutrition">Sunny Nutrition</a></li>
+      					<li><a href="http://2010.igem.org/Team:ZJU-China/ZJU-IR" title="ZJU-OIR">ZJU-OIR</a></li>
+                        <li><a href="http://2010.igem.org/Team:ZJU-China/ZJU-CLS" title="ZJU-CLS">ZJU-CLS</a></li>
+                    	</ul>
+                    </div>
+            </div>   
+            
+            <div id="menubox">          
+<a href="http://s07.flagcounter.com/more/0Sa"><img src="http://s07.flagcounter.com/count/0Sa/bg=FFFFFF/txt=000000/border=CCCCCC/columns=2/maxflags=248/viewers=0/labels=0/pageviews=1/" alt="free counters" border="0"></a>
+            </div>
+
+    	</div>
+    	</div>
+
+</html>

@@ -1,0 +1,957 @@
+__NOTOC__
+<html>
+
+<!--
+
+============================================================================================
+*** PLEASE NOTE: ***
+
+When copying our code, please be so kind to mention so on your wiki.
+
+You can use our logo http://2010.igem.org/wiki/images/7/7b/TU_Delft.jpg to link to our wiki.
+
+For questions about this, contact us at info@igemtudelft.nl.
+
+Pieter van Boheemen, Jelmer Cnossen
+
+============================================================================================
+
+/-->
+
+<!-- Reset CSS - START 
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.1/build/base/base-min.css">
+Reset CSS - END /-->
+
+<!-- Internet Explorer PNG fix - START /-->
+<!--[if lt IE 7]>
+<script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE8.js">IE7_PNG_SUFFIX=".png";</script>
+<![endif]-->
+<!-- Internet Explorer PNG fix - END /-->
+
+<!-- Scripting - START /-->
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.js"></script>
+<script type="text/javascript" src="http://github.com/cowboy/jquery-hashchange/raw/v1.3/jquery.ba-hashchange.js"></script>
+
+<!-- Font Replacer - START /-->
+<script src="http://2010.igem.org/Team:TU_Delft/files/cufon-yui.js?action=raw&ctype=text/javascript" type="text/javascript"></script>
+<script src="http://2010.igem.org/Team:TU_Delft/files/Mido_500.font.js?action=raw&ctype=text/javascript" type="text/javascript"></script>
+<!-- Font Replacer - END /-->
+
+<script>
+//Global Vars
+var currentPage;
+var in_frame_test = 1;
+var ampersandStr = String.fromCharCode(38);
+var loading_home = false;
+
+function dbgout(msg) {
+  var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+  if(is_chrome) console.log(msg);
+}
+
+function updateContentEditLink() {
+	if (!wgUserName) {
+		return;
+	}
+
+	var page = currentPage ? currentPage : 'Home';
+	var url = location.pathname + '/' + page + '?action=edit';
+	$("#edit_content_link").attr('href', url);
+//	$("#edit_content_link").click(function() {
+//		$("#iGEM_TU_Delft_container").html('<iframe src="'+url+'" width="100%" height="100%"></iframe>');
+//	});
+}
+
+// Set document ready callback
+$(function() {
+	if (wgUserName) {
+		// Create content edit link
+		$(".left-menu ul > *:last").after('<li><a id="edit_content_link">edit content</a></li>');
+		updateContentEditLink();
+	}
+
+	// Initialize history plugin.
+	$(window).hashchange(historyCallback);
+	rewriteLinks($("#navlist"));
+
+	historyCallback();
+
+	// setup hovering
+	$(".menu_button").hover(
+		function () { $(this).addClass("hover"); },
+		function () { $(this).removeClass("hover"); }
+	);
+});
+
+
+function isDefined(variable)
+{
+    return typeof(window[variable]) != "undefined";
+}
+
+function splitHash(hash) {
+	var kvpairs = hash.split(ampersandStr);
+	var i;
+	var kvmap = {};
+	for(i=0;i<kvpairs.length;i++) {
+		var s = kvpairs[i].split('=');
+		kvmap[s[0]] = s[1];
+	}
+	return kvmap;
+}
+
+function makeHash(page, kvmap) {
+	var str = '#page=' + page;
+	var i;
+	if (kvmap) {
+		for(i in kvmap) {
+			str += ampersandStr + i + '=' + kvmap[i];
+		}
+	}
+	return str;  
+}
+
+function setHash(page, kvmap) {
+	location.hash = makeHash(page,kvmap);
+}
+
+
+function include_js(file, cb) {
+    var html_doc = document.getElementsByTagName('head')[0];
+    var js = document.createElement('script');
+    js.setAttribute('type', 'text/javascript');
+    js.setAttribute('src', file);
+    html_doc.appendChild(js);
+
+    js.onreadystatechange = function () {
+        if (js.readyState == 'complete') {
+		cb();
+        }
+    }
+
+    js.onload = cb;
+}
+
+function loadScript(src, callback)
+{
+  include_js(src, callback);
+}
+
+function loadPage(page)
+{
+	var showLoadAnim = !!currentPage;
+	currentPage = page;
+	var url = wgServer + "/Team:TU_Delft/" + page + "?action=render";
+	$(window).trigger('page_close');
+
+	if(showLoadAnim) {
+		$("#TUD-loading-panel").show();
+		//$("#loading-overlay").show();
+		$("#iGEM_TU_Delft_container").fadeTo(200,0.25);
+		$('html, body').animate({scrollTop:0}, 'slow');
+	}
+	loading_home = false;
+
+	var processPage = function(next) {
+		dbgout('processPage: ' + page);
+		$(window).trigger('page_init');
+		rewriteLinks($("#iGEM_TU_Delft_container"));
+		updateContentEditLink();
+		$("#iGEM_TU_Delft_container").fadeTo(200,1);
+		next();
+	}
+	
+	$.get(url, function(data) {
+		$("#iGEM_TU_Delft_container").html(data).queue(processPage);
+		buildBreadCrumbTrail(page); 
+ 		Cufon.replace('h2'); // Works without a selector engine 
+		Cufon.replace('h3'); // Works without a selector engine 
+		Cufon.replace('#sub1'); // Requires a selector engine for IE 6-7, see above 
+		//$("tr:nth-child(odd)").addClass("odd");
+
+		$("#TUD-loading-panel").hide();
+		$("#loading-overlay").hide();
+	});
+}
+
+function historyCallback() {
+	var hash = location.hash;
+	if(hash) {
+		hash = hash.substring(1);
+		if(hash.split('=').length > 1) {
+			var kvmap = splitHash(hash);
+			var changepage;
+
+			// looks a little clumsy, but js AND operator conflicts with mediawiki markup
+			if (kvmap.page) if(kvmap.page != currentPage) changepage = kvmap.page;
+
+			if (changepage) {
+				loadPage(changepage);
+			} else
+				$(window).trigger('hashupdate');
+		}
+	} else {
+		setHash('Home');
+	}
+}
+
+
+function rewriteLinks(elem) {
+	$("a",elem).each(function() {
+		var txt = $(this).text();
+		var url = this.href;
+
+		if(this.hash)
+			this.href = this.hash;
+		else if(txt != "edit")
+			this.href = this.href.replace("http://2010.igem.org/Team:TU_Delft/", "#page=");
+
+//		dbgout('rewriting ' + url + ' to ' + this.href);
+	});
+}
+
+
+</script>
+<script type="text/javascript">
+var timeout    = 500;
+var closetimer = 0;
+var ddmenuitem = 0;
+
+function jsddm_open() {
+  jsddm_canceltimer();
+  jsddm_close();
+  ddmenuitem = $(this).find('ul').css('display', 'block');
+//ddmenuitem = $(this).find('ul').show(200);
+}
+
+function jsddm_close() {
+  if(ddmenuitem) ddmenuitem.css('display', 'none');
+//if(ddmenuitem) ddmenuitem.hide();
+}
+
+function jsddm_timer() {
+  closetimer = window.setTimeout(jsddm_close, timeout);
+}
+
+function jsddm_canceltimer() {
+  if(closetimer) {
+    window.clearTimeout(closetimer);
+    closetimer = null;
+  }
+}
+
+$(function() {
+  $('#navlist > li').bind('mouseover', jsddm_open);
+  $('#navlist > li').bind('mouseout',  jsddm_timer);
+ // $("#navlist li ul li:even").addClass("alt");
+});
+
+document.onclick = jsddm_close;
+</script>
+
+<script language="javascript" type="text/javascript">
+function capitaliseFirstLetter(string)
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+		function buildDepth(array,count)
+		{
+			var depthStr="";
+			for (i=0;i<count;i++)
+			{
+				depthStr=depthStr + array[i] + "/" ;
+			}
+			return depthStr;
+		}
+		function buildBreadCrumbTrail(page)
+		{
+			var constituentFolders = new Array();
+			var currentURL = page;
+			constituentFolders=currentURL.split("/");
+			var outputStr="<a href='http://2010.igem.org/Team:TU_Delft#page=Home'>Home</a>";
+			if(page != "Home") {
+				for (count=0;count<(constituentFolders.length);count++)
+				{
+					outputStr=outputStr + " <span class='doubleright'>&raquo;</span> <a href='http://2010.igem.org/Team:TU_Delft#page=" + buildDepth(constituentFolders,count) + constituentFolders[count] + "'>" + capitaliseFirstLetter(constituentFolders[count]).replace(/-/gi," ") + "</a>";
+				}
+			}
+			$("#breadcrumbs").html(outputStr);
+		}
+</script>
+<!-- Scripting END /-->
+
+<!-- Main CSS - START /-->
+<style type="text/css">
+/* Wiki Hacks - START */
+/* Author: Pieter van Boheemen */
+/* Team: TU Delft */
+#globalWrapper { background-color: transparent; border: none; margin: 0; padding: 0; width: 100%;
+	height:auto !important; /* real browsers */
+	height:100%; /* IE6: treaded as min-height*/
+	min-height:100%; /* real browsers */
+}
+#content { z-index: 1; background-color: transparent; border: none; padding: 0; margin: 0; width: 100%; overflow: hidden; margin-top: -15px !important; margin-top: 0px;
+	height:auto !important; /* real browsers */
+	height:100%; /* IE6: treaded as min-height*/
+	min-height:100%; /* real browsers */
+}
+#bodyContent { border: none; padding:0; margin:0; width:100%;
+	height:auto !important; /* real browsers */
+	height:100%; /* IE6: treaded as min-height*/
+	min-height:100%; /* real browsers */
+}
+#top-section { z-index: 2; height: 15px; margin: 0px; margin-left: auto; margin-right: auto; margin-bottom: 0 !important; padding:0; border: none; font-size: 10px;}
+#p-logo { height:1px; overflow:hidden; display: none;}
+#search-controls { overflow:hidden; display:block; background: none; position: absolute; top: 100px; right: 40px;}
+.left-menu { width: 500px !important; display:block; margin-top:-80px; border: none; text-align: right;}
+.left-menu ul { border: none; }
+#menubar.right-menu { width:300px; display:block; float:left; margin-top:-80px; border: none;}
+.right-menu ul { border: none; width: 300px;}
+#footer-box { background-color: #216085; border: none; width: 100%; margin: -10px auto 0 auto; padding: 20px 0;}
+.visualClear { display: none; }
+#footer { border: none; width: 965px; margin: 0 auto; padding: 0;}
+.firstHeading { display: none;}
+#f-list a { color: #333; font-size: 10px;}
+#f-list a:hover { color: #666;}
+.printfooter { display: none; }
+#footer ul { margin: 0; padding: 0;}
+#footer ul li { margin-top: 0; margin-bottom: 0; margin-left: 10px; margin-right: 10px; padding: 0;}
+#search-controls { display:none; }
+h3#siteSub { display: none;}
+#contentSub {display: none;}
+p:first-child { display: none;}
+h1{border:none; width: 100%; clear: both;}
+/* Wiki Hacks - END */
+		h2 {
+			font-size: 30px;
+			border: none;
+		}
+
+		h3 {
+			font-size: 20px;
+			border: none;
+		}
+
+		html, body {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;	
+		}
+
+		body {
+			background-color: #d0f1fa;
+			font-family: Verdana, Arial;
+			font-size: 12px;
+			color: #222222;
+		}
+			
+		#TUD-main-wrapper {
+			width: 100%;
+	height:auto !important; /* real browsers */
+	height:100%; /* IE6: treaded as min-height*/
+	min-height:100%; /* real browsers */
+			text-align: center;
+			background-image: url('http://2010.igem.org/wiki/images/b/b3/TU_Delft_footer_tile.gif');
+			background-position: bottom left;
+			background-repeat: repeat-x;	
+			display: block;	
+			font-family: Verdana, Arial;
+			font-size: 12px;
+			color: #222222;
+		}
+
+#TUD-main-wrapper div {
+			line-height: 18px;
+}
+
+		/* IE ignores this */
+		html>body #TUD-main-wrapper {
+			height: auto;
+			min-height: 100%;
+		}
+
+		#TUD-main-wrapper2 {
+			width: 100%;
+	height:auto !important; /* real browsers */
+	height:100%; /* IE6: treaded as min-height*/
+	min-height:100%; /* real browsers */
+			text-align: center;
+			background-image: url('http://2010.igem.org/wiki/images/9/9d/TU_Delft_bg_tile.gif');
+			background-repeat: repeat-x;
+			background-repeat: repeat-x;	
+			display: block;	
+			font-family: Verdana, Arial;
+			font-size: 12px;
+			color: #222222;
+			margin-top: -8px;
+		}
+
+		/* IE ignores this */
+		html>body #TUD-main-wrapper2 {
+			height: auto;
+			min-height: 100%;
+		}
+
+		#TUD-content-wrapper {
+			background-color: #fff;
+			text-align: left;
+			width: 1024px;
+			margin: 0 auto;
+			padding: 0;
+	height:auto !important; /* real browsers */
+	height:100%; /* IE6: treaded as min-height*/
+	min-height:100%; /* real browsers */
+		}
+
+		#TUD-header {
+			width: 1024px;
+			background-image: url('http://2010.igem.org/wiki/images/5/58/TU_Delft_header_bg.gif');
+			height: 120px;
+		}
+
+		#TUD-menu {
+			width: 1024px;
+			background-image: url('http://2010.igem.org/wiki/images/c/c5/TU_Delft_menu_bg.gif');
+			height: 38px;
+		}
+
+
+		#TUD-body-wrapper {
+			width: 100%;
+			background-image: url('http://2010.igem.org/wiki/images/8/80/TU_Delft_body_bg.jpg');
+			/* FireFox collapsing margin fix */
+			padding-top: 1px;/*important*/
+			margin-top: -1px;/*important*/
+		}
+
+		#TUD-body-container {
+			width: 100%;
+			background-image: url('http://2010.igem.org/wiki/images/5/5d/TU_Delft_body_top_bg.jpg');
+			background-repeat: no-repeat;
+			/* FireFox collapsing margin fix */
+			padding-top: 1px;/*important*/
+			margin-top: -1px;/*important*/
+			display: block;
+		}
+
+		#TUD-body-content {
+			background-image: url('http://2010.igem.org/wiki/images/5/5f/TU_Delft_body_footer_bg.jpg');
+			width: 1024px;
+			background-repeat: no-repeat;
+			background-position: bottom left;
+			padding-bottom: 15px
+		}
+
+		#TUD-main-content {
+			width: 904px;
+			margin: 10px 60px 0px 60px;
+		}
+		
+		#iGEM_TU_Delft_container {
+			min-height: 400px;
+		}
+
+		#TUD-footer {
+			width: 100%;
+			height: 254px;
+			text-align: center;
+		}
+
+		h1 {
+			margin: 0;
+			padding: 0;
+			display: block;
+			float: left;
+		}
+
+		.TUD-logo {
+			background-image: url('http://2010.igem.org/wiki/images/0/09/TU_Delft_iGEM_Team_Logo.png');
+			width: 237px;
+			height: 95px;
+			margin-left: 90px;
+			background-repeat: no-repeat;
+			border: none;
+		}
+
+		.TUD-logo span {
+			visibility: hidden;
+		}
+
+
+		#TUD-loading-panel {
+			z-index: 100;
+			position: absolute;
+			left: 0px;
+			top: 0px;
+			width: 100%;
+			height: 100%;
+			display:none;
+		}
+
+		#TUD-loading-panel-logo {
+			margin: 0 auto;
+			margin-top: 250px;
+		}
+
+		#loading-overlay {
+			z-index: 70;
+			width: 100%;
+			height: 100%;
+			display:none;
+			opacity:0.4;
+			filter:alpha(opacity=40);
+		}
+
+		#back_to_igem {
+			margin: 15px 0 0 0;
+			padding:0;
+			float: right;
+		}
+
+		/* MENU */
+		#navlist {
+			margin: 0 0 0 55px;
+			padding: 0;
+		}
+
+		#navlist li {
+			display: block;
+			list-style-type: none;
+			float:left;
+			padding: 0;
+			margin: 0;
+		}
+
+		#navlist li a {
+			text-decoration: none;
+			color: #000;
+		}
+
+		#navlist li a:hover {
+			text-decoration: underline;
+		}
+
+		#navlist li ul {
+			position: absolute;
+			display:none;
+			background-color: #fff;
+			padding:0;
+			z-index:100;
+			margin-left: 0px;
+			margin-top: 4px;
+		}
+
+		html>body #navlist li ul {
+			margin-left: 0;
+		}
+
+		#navlist li ul li {
+			list-style-type:none;
+			float:left;
+			clear:both;
+			z-index:100;
+		}
+
+		#navlist li ul li a {
+			display: block;
+			color: #222;
+			width: 150px;
+			border: 1px solid #d0f1fa;
+			padding: 3px;
+		}
+
+		#navlist li ul li a:hover {
+			color: #000;
+			background-color: #54c9f5;
+			text-decoration: underline;
+		}
+
+		.menubutton {
+			display:block;
+			margin: 13px 10px 0px 10px;
+		}
+		/* FOOTER */
+		#TUD-footer, #TUD-footer-content {
+			width: 904px;
+			margin: 0 auto;
+			text-align: left;
+		}
+/*TABLE .odd {
+background-color: #dbeaff;
+} */
+
+</style>
+<!-- Main CSS - END /-->
+	<a name="top"></a>
+
+	<div id="TUD-loading-panel">
+		<div id="TUD-loading-panel-logo">
+			<!-- yes im using center -->
+			<center><img width="100" height="120" src="http://2010.igem.org/wiki/images/d/d8/TUDelft_2010_AlkanivoreAnimated.gif" /> <h2>Loading...</h2></center>
+		</div>
+	</div>
+
+	<div id="TUD-main-wrapper2">
+	<div id="TUD-main-wrapper">
+
+		<div id="TUD-content-wrapper">
+			<div id="TUD-header">
+<style>
+a.nohover:hover {
+text-decoration: none;
+}
+</style>
+				<a class="nohover" href="http://2010.igem.org/Team:TU_Delft"><h1 class="TUD-logo"><span>TU Delft iGEM Team 2010</span></h1></a>
+				<span id="back_to_igem"><a href="http://2010.igem.org/" alt="back to 2010.igem.org" title="back to 2010.igem.org"><img src="http://2010.igem.org/wiki/images/3/32/TU_Delft_back_to_igem.png" border="0" /></a></span>
+			</div>
+			<div id="TUD-menu">
+
+<ul id="navlist">
+	<li><a class="menubutton" id="home" href="http://2010.igem.org/Team:TU_Delft#page=Home" title="Home"><span>Home</span></a></li>
+	<li><a class="menubutton" id="team" href="http://2010.igem.org/Team:TU_Delft#page=Team" title="Team"><span>Team</span></a>
+
+		<ul>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Team" title="Overview">Overview</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Team/members" title="Members">Members</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Team/organization" title="Organization">Organization</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Team/university" title="University">University</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Team/previous-teams" title="Previous Teams">Previous Teams</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Team/gallery" title="Picture Gallery">Picture Gallery</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Team/movies" title="Movies">Movies</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Team/ijam" title="iJAM">iJAM</a></li>
+		</ul>
+	</li>
+	<li><a class="menubutton" id="project" href="http://2010.igem.org/Team:TU_Delft#page=Project" title="Project">Project</a>
+		<ul>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Project" title="Overview">Overview</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Project/introduction" title="Introduction">Introduction</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Project/alkane-degradation" title="Alkane Degradation">Alkane Degradation</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Project/tolerance" title="Survival">Survival</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Project/solubility" title="Emulsification">Solubility</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Project/sensing" title="Hydrocarbon Sensing">Sensing</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Project/rbs-characterization" title="RBS Characterization">RBS Characterization</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Project/conclusions" title="General Conclusions">General Conclusions</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Project/references" title="References">References</a></li>
+		</ul>
+	</li>
+	<li><a class="menubutton" id="insilico" href="http://2010.igem.org/Team:TU_Delft#page=Notebook" title="Notebook">Notebook</a>
+		<ul>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Notebook" title="Overview">Overview</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Notebook/blog" title="Blog">Blog</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Notebook/timeline" title="Timeline">Timeline</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Notebook/brainstorm" title="Brainstorm">Brainstorm</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Notebook/cloning-plan" title="Cloning Plan">Cloning Plan</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Notebook/protocols" title="Protocols">Protocols</a></li>
+		</ul>
+	</li>
+	<li><a class="menubutton" id="parts" href="http://2010.igem.org/Team:TU_Delft#page=Parts" title="Parts">Parts</a>
+		<ul>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Parts" title="Overview">Overview</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Parts/biobricks" title="BioBricks">BioBricks</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Parts/characterization" title="Characterization">Characterization</a></li>
+		</ul>
+	</li>
+	<li><a class="menubutton" id="insilico" href="http://2010.igem.org/Team:TU_Delft#page=Modeling" title="In Silico">In Silico</a>
+		<ul>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Modeling" title="Overview">Overview</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Modeling/MFA" title="MFA">MFA</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Modeling/HC_regulation" title="Hydrocarbon Regulation">Hydrocarbon Regulation</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Modeling/interaction-mapping" title="Software Tool">Interaction Mapping</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Modeling/wiki-tips-tricks" title="Wiki tips & tricks">Wiki Tips &amp; Tricks</a></li>
+		</ul>
+	</li>
+	<li><a class="menubutton" id="safety" href="http://2010.igem.org/Team:TU_Delft#page=Safety" title="Safety">Safety</a>
+		<ul>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Safety" title="Overview">Overview</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Safety/in-the-lab" title="Biosafety">Biosafety in the lab</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Safety/society" title="Safety for Society">Safety for Society</a></li>
+		</ul>
+	</li>
+	<li><a class="menubutton" id="education" href="http://2010.igem.org/Team:TU_Delft#page=Education" title="Education">Education</a>
+		<ul>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Education" title="Overview">Overview</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Education/nanopodium" title="Nanopodium">Nanopodium</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Education/science-museum" title="Science Museum">Science Museum</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Education/game" title="Game">iGEM Game</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Education/nemo" title="Night of the Nerds">Night of the Nerds</a></li>
+<li><a href="http://2010.igem.org/Team:TU_Delft#page=Education/Workshop_on_synthetic_biology" title="SynBio Workshop">SynBio Workshop</a></li>
+		</ul>
+	</li>
+	<li><a class="menubutton" id="publicity" href="http://2010.igem.org/Team:TU_Delft#page=Publicity" title="Publicity">Publicity</a>
+		<ul>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Publicity" title="Overview">Overview</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Publicity/communication_plan" title="Communication Plan">Communication Plan</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Publicity/in-the-news" title="In The News">In the News</a></li>
+			<!-- <li><a href="http://2010.igem.org/Team:TU_Delft#page=Publicity/articles" title="Articles">Articles</a></li> /-->
+		</ul>
+	</li>
+	<li><a class="menubutton" id="collaboration" href="http://2010.igem.org/Team:TU_Delft#page=Collaboration" title="Collaboration">Collaboration</a>
+		<ul>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Collaboration" title="Overview">Overview</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Collaboration/sponsors" title="Sponsors">Sponsors</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Collaboration/igem-teams" title="iGEM Teams">iGEM Teams</a></li>
+			<li><a href="http://2010.igem.org/Team:TU_Delft#page=Collaboration/acknowledgements" title="Acknowledgements">Acknowledgements</a></li>
+		</ul>
+	</li>
+	<li><a class="menubutton" id="collaboration" href="http://2010.igem.org/Team:TU_Delft#page=Contact" title="Contact">Contact</a></li>
+</ul>
+			</div>
+			<div id="TUD-body-wrapper">
+				<div id="TUD-body-container">
+
+					<div id="TUD-body-content">
+						<div id="TUD-main-content">
+<div id="loading-overlay"></div>
+<div id="breadcrumbs"></div>
+<div id="iGEM_TU_Delft_container">
+</div>
+</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="TUD-footer">
+			<div id="TUD-footer-content">
+
+<div id="TUD-footer-contact-info">
+<span class="TUD-footer-title">About the TU Delft Team</span>
+<div class="br"></div>
+Nine students spent their summer in the lab, having fun with digesting, ligating and transforming BioBricks. This wiki is all about the plans, the work and the results. If you can't find what you need, please contact us!
+<div class="br"></div>
+<a href="Team">Meet the team</a>
+<br />
+<a href="#top">Back to top</a>
+</div>
+
+<div id="TUD-footer-search">
+<span class="TUD-footer-title">Search</span>
+
+<div class="br"></div>
+<form action="/Special:Search" id="search-form">
+<input id="searchInput" name="search" type="text" title="Search 2010.igem.org [f]" accesskey="f" value="" />
+<input type='submit' name="go" class="searchButton" id="searchGoButton"	value="Go" title="Go to a page with this exact name if exists" />&nbsp;
+<input type='submit' name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" />
+</form>
+<br />
+<span class="TUD-footer-title">Contact us</span>
+<div class="br"></div>
+<i>Kluyverlaboratorium voor Biotechnologie</i><br />
+Julianalaan 67, 2628 BC Delft, The Netherlands<br />
+<div class="br"></div>
+<b>E:</b> <a href="mailto:info@igemtudelft.nl">info@igemtudelft.nl</a><br />
+
+<div class="br"></div>
+<b>T:</b> +31 15 278 1625
+</div>
+
+<div id="TUD-footer-navlist">
+<span class="TUD-footer-title">Navigate our wiki</span>
+<div class="br"></div>
+<ul>
+	<li><a href="/Team:TU_Delft#page=Home">Home</a></li>
+	<li><a href="/Team:TU_Delft#page=Team">Team</a></li>
+	<li><a href="/Team:TU_Delft#page=Project">Project</a></li>
+	<li><a href="/Team:TU_Delft#page=Notebook/blog">Blog</a></li>
+	<li><a href="/Team:TU_Delft#page=Parts">Parts</a></li>
+	<li><a href="/Team:TU_Delft#page=Modeling">In Silico</a></li>
+	<li><a href="/Team:TU_Delft#page=Safety">Safety</a></li>
+	<li><a href="/Team:TU_Delft#page=Education">Education</a></li>
+	<li><a href="/Team:TU_Delft#page=Publicity">Publicity</a></li>
+	<li><a href="/Team:TU_Delft#page=Collaboration">Collaboration</a></li>
+	<li><a href="/Team:TU_Delft#page=Contact">Contact</a></li>
+</ul>
+</div>
+
+<div id="TUD-footer-twitter-box">
+<div id="twitter_div">
+<ul id="twitter_update_list"><li></li></ul>
+</div>
+<script type="text/javascript" src="http://twitter.com/javascripts/blogger.js"></script>
+
+<script type="text/javascript" src="http://twitter.com/statuses/user_timeline/iGEMTUDELFT2010.json?callback=twitterCallback2&amp;count=3"></script>
+<div class="socialicon" style="background-image:url(http://2010.igem.org/wiki/images/c/c8/Facebook-32x32.png);"><a href="http://tiny.cc/igemtudelft" title="TU Delft iGEM Team Facebook"></a></div>
+<div class="socialicon" style="background-image:url(http://2010.igem.org/wiki/images/7/7e/Twitter-32x32.png);"><a href="http://twitter.com/igemtudelft2010" title="TU Delft iGEM Team Twitter"></a></div>
+<div class="socialicon" style="background-image:url(http://2010.igem.org/wiki/images/3/38/Youtube-32x32.png);"><a href="http://www.youtube.com/user/igemtudelft2010" title="TU Delft iGEM Team YouTube"></a></div>
+<div class="socialicon" style="background-image:url(http://2010.igem.org/wiki/images/2/22/Linkedin-32x32.png);"><a href="http://www.linkedin.com/groups?gid=3070941" title="TU Delft iGEM Team LinkedIn"></a></div>
+</div>
+
+<style>
+#TUD-footer-content {
+	padding: 25px 0 25px 0;
+	font-size: 10px;
+	color: #000;
+	line-height: 12px;
+}
+
+#TUD-footer-content div {
+line-height: 12px;
+}
+
+#TUD-footer-content a {
+	color: #4db7f1;
+}
+
+.br {
+	height: 5px;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+#TUD-footer-contact-info {
+	float: left;
+	width: 153px;
+}
+
+#TUD-footer-search {
+	float: left;
+	width: 153px;
+	margin-left: 30px;
+}
+
+#TUD-footer-navlist {
+	float: left;
+	width: 153px;
+	margin-left: 30px;
+}
+
+#TUD-footer-twitter-box {
+	float: left;
+	width: 350px;
+	margin-left: 30px;
+}
+
+.TUD-footer-title {
+	font-weight: bold;
+	color: #019aed;
+}
+
+#TUD-footer-search form {
+	margin: 0;
+	padding: 0;
+	font-size: 10px;
+}
+
+#TUD-footer-search form #searchInput {
+	background-color: #4db7f1;
+	border: 1px solid #000;
+	width: 100%;
+}
+
+#TUD-footer-search form .searchButton {
+	margin-top: 4px;
+	font-size: 11px;
+	background-color: #266c96;
+	border: 1px solid #000;
+	color: #4db7f1;
+	padding: 2px;
+}
+
+#TUD-footer-navlist ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	list-style: none;
+}
+
+#TUD-footer-navlist ul li {
+	height: 14px;
+	display: block;
+	margin: 1px;
+	background-color: #266c96;
+	padding: 0 5px;
+}
+
+#TUD-footer-navlist ul li a {
+	text-decoration: none;
+}
+
+#TUD-footer-navlist ul li a:hover {
+	text-decoration: underline;
+}
+
+#TUD-footer-content .socialicon {
+	margin-top: 4px;
+	margin-right:10px;
+	width:32px;
+	height:32px;
+	display:block;
+	float:left;
+}
+
+#TUD-footer-content .socialicon a {
+	width:100%;
+	height:100%;
+	display:block;
+}
+
+
+#twitter_div {
+	background-image: url('http://2010.igem.org/wiki/images/e/ec/TU_Delft_twitterBG.gif');
+	background-repeat: no-repeat;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #5AA5BC;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	margin-top:10px;
+	padding-top: 33px;
+	padding-right: 5px;
+	padding-left: 5px;
+	width: 340px;
+	overflow: hidden;
+}
+
+#twitter_div ul {
+	list-style-type: none;
+	margin: 5px 0 5px 0;
+	padding: 0;
+	width: 340px;
+}
+
+#twitter_div ul li {
+	color: #0C93BA;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #A1E8F7;
+	margin: 0 0 3px 0;
+}
+ 
+#twitter_div ul li a {
+	text-decoration: none;
+	color: #DDA84E;
+}
+ 
+#twitter_div ul li a:hover {
+	text-decoration: none;
+	color: #D78E42;
+}
+ 
+#twitter_div p {
+	text-align: right;
+	padding-right: 6px;
+	padding-bottom: 10px;
+}
+</style>
+
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-16783722-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</html>

@@ -1,0 +1,42 @@
+<title>漂亮的JS图片渐变代码 - www.webdm.cn</title>
+<script language=JavaScript>
+
+nereidFadeObjects = new Object();
+nereidFadeTimers = new Object();
+function nereidFade(object, destOp, rate, delta){
+if (!document.all)
+return
+    if (object != "[object]"){ setTimeout("nereidFade("+object+","+destOp+","+rate+","+delta+")",0);
+        return;
+    }
+    clearTimeout(nereidFadeTimers[object.sourceIndex]);
+    diff = destOp-object.filters.alpha.opacity;
+    direction = 1;
+    if (object.filters.alpha.opacity > destOp){
+        direction = -1;
+    }
+    delta=Math.min(direction*diff,delta);
+    object.filters.alpha.opacity+=direction*delta;
+    if (object.filters.alpha.opacity != destOp){
+        nereidFadeObjects[object.sourceIndex]=object;
+        nereidFadeTimers[object.sourceIndex]=setTimeout("nereidFade(nereidFadeObjects["+object.sourceIndex+"],"+destOp+","+rate+","+delta+")",rate);
+    }
+}
+
+</script>
+ <table border="0" cellspacing="1" cellpadding="0" align="center">
+<tr>打开页面请等待一会，图片加载完才能看到效果！</tr>
+          <tr align="center"> 
+            <td background="http://www.webdm.cn/images/wall1_s.jpg" width="60" height="60"><a href="#"><img 
+      onmouseover=nereidFade(this,100,5,7) style="FILTER: alpha(opacity=0);border:1px solid #000000" 
+      onmouseout=nereidFade(this,01,7,5) 
+      src="http://www.webdm.cn/images/wall5_s.jpg" width="60" height="60" border="0" alt="Codefans.NET精品资源"></a></td>
+            <td width="60" height="60" background="http://www.webdm.cn/images/wall2_s.jpg"><a href="#"><img src="http://www.webdm.cn/images/wall6_s.jpg" width="60" height="60" border="0" alt="精品网页特效" onmouseover=nereidFade(this,100,5,7) style="FILTER: alpha(opacity=0);border:1px solid #000000"  
+      onmouseout=nereidFade(this,01,7,5)></a></td>
+            <td width="60" height="60" background="http://www.webdm.cn/images/wall3_s.jpg"><a href="#p"><img src="http://www.webdm.cn/images/wall7_s.jpg" width="60" height="60" border="0" alt="学习型源代码"  onmouseover=nereidFade(this,100,5,7) style="FILTER: alpha(opacity=0);border:1px solid #000000"  
+      onmouseout=nereidFade(this,01,7,5)></a></td>
+          </tr>
+        </table>
+
+<br />
+<a href="http://www.webdm.cn">网页代码站</a> - 最专业的代码下载网站 - 致力为中国站长提供有质量的代码！

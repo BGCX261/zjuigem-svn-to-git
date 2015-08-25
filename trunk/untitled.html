@@ -1,0 +1,100 @@
+<html>
+<head>
+<style>
+/* 静态 */
+#ct1{
+background:green;
+height:200px;
+width:200px;
+margin-bottom:10px;
+}
+#subCt1{
+position:static;
+width:50%;
+height:50%;
+background:yellow;
+}
+/* 相对 */
+#ct2{
+background:green;
+height:200px;
+width:200px;
+margin-bottom:10px;
+}
+#subCt2{
+position:relative;
+width:50%;
+height:50%;
+top:50%;
+left:50%;
+background:yellow;
+}
+/* 绝对 */
+#ct3,#ct4{
+background:green;
+height:200px;
+width:200px;
+position:relative;
+margin-bottom:10px;
+}
+#subCt3,#subCt4{
+position:absolute;
+height:50%;
+width:50%;
+top:50%;
+left:50%;
+background:yellow;
+}
+#ct4 p{
+position:relative;
+z-index:1;
+}
+#subCt4{
+z-index:0;
+}
+</style>
+</head>
+<body>
+<h1>静态定位</h1>
+<div id="ct1">
+<div id="subCt1">
+</div>
+</div>
+<h1>相对定位</h1>
+<div id="ct2">
+<div id="subCt2">
+</div>
+<p>
+它偏移了，原来的位置还占用着!而且还把俺给覆盖了……
+</p>
+</div>
+<h1>绝对定位</h1>
+<div id="ct3">
+<div id="subCt3">
+</div>
+<p>
+它偏移了，原来的位置让出来了!接下来看下面会不会把俺给覆盖了<br/>
+看下面，有覆盖了没......<br />
+看下面，有覆盖了没......<br />
+看下面，有覆盖了没......<br />
+看下面，有覆盖了没......<br />
+看下面，有覆盖了没......<br />
+呃——还是被覆盖了……
+</p>
+</div>
+<h1>z-index</h1>
+<div id="ct4">
+<div id="subCt4">
+</div>
+<p>
+它偏移了，原来的位置让出来了!接下来我不再想被覆盖了，看我z-index的厉害<br/>
+看下面，有覆盖了没......<br />
+看下面，有覆盖了没......<br />
+看下面，有覆盖了没......<br />
+看下面，有覆盖了没......<br />
+看下面，有覆盖了没......<br />
+呵——覆盖不了吧……
+原来z-index只对定位元素有效呀!
+</p>
+</div>
+</body>
